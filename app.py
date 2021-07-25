@@ -18,6 +18,16 @@ def numbers():
 def custom_input(val1, val2):
     return "<p>val1: {}, val2: {}</p>".format(escape(val1),escape(val2))
 
+
+@app.route("/sum/<val1>/<val2>")
+def sum_two_values(val1, val2):
+    try:
+        val1 = int(val1)
+        val2 = int(val2)
+        return "<p>{} + {} = {}</p>".format(escape(val1),escape(val2), escape(int(val1)+int(val2)))
+    except ValueError as e:
+        return "Error: one value was not an integer"
+
 @app.route('/user/<username>')
 def profile(username):
     return f'{username}\'s profile'
