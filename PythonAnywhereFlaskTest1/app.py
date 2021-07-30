@@ -1,25 +1,28 @@
-from flask import Flask, url_for,render_template
+from flask import Flask, url_for,render_template, Blueprint
 from markupsafe import escape
 
 app = Flask(__name__)
 
-@app.route("/")
+bp = Blueprint("app1", __name__)
+
+@bp.route('/')
+def hello_testing():
+    return "<p>Hello, testing!</p>"
+
+@bp.route('/hello/')
 def hello_world():
     return "<p>Hello, World!</p>"
 
-
-
-@app.route("/123")
+@bp.route("/123/")
 def numbers():
     return "<p>A number</p>"
 
-
-@app.route("/<val1>/<val2>")
+@bp.route("/<val1>/<val2>")
 def custom_input(val1, val2):
     return "<p>val1: {}, val2: {}</p>".format(escape(val1),escape(val2))
 
 
-@app.route("/sum/<val1>/<val2>")
+@bp.route("/sum/<val1>/<val2>")
 def sum_two_values(val1, val2):
     try:
         val1 = int(val1)
@@ -28,13 +31,13 @@ def sum_two_values(val1, val2):
     except ValueError as e:
         return "Error: one value was not an integer"
 
-@app.route('/user/<username>')
+@bp.route('/user/<username>')
 def profile(username):
     return f'{username}\'s profile'
 
 
-@app.route('/hello/')
-@app.route('/hello/<name>')
+
+@bp.route('/hello/<name>')
 def hello(name=None):
     return render_template('hello.html', name=name)
 
@@ -53,3 +56,9 @@ def form():
 #    print(url_for('custom_input', val1= 'hello', val2 = 'world'))
 #    print(url_for('numbers', next='/'))
 #    print(url_for('profile', username='John Doe'))
+
+
+if __name__ == '__main__':
+    app = Flask(__name__, instance_relative_config=True)
+    app.register_blueprint(bp)
+    app.run()
